@@ -1,4 +1,5 @@
 import { Response, Request } from "express";
+import { handleControllerError } from "../errors";
 import * as LoginService from "../services/auth";
 
 const login = async (req: Request, res: Response) => {
@@ -9,8 +10,8 @@ const login = async (req: Request, res: Response) => {
   try {
     const token = await LoginService.validateAndCreateToken(email, password);
     res.status(200).send(token);
-  } catch (e) {
-    res.status(500).send("Internal error");
+  } catch (error) {
+    handleControllerError(error, res, "Authentication failed");
   }
 };
 

@@ -35,8 +35,10 @@ describe("User controller", () => {
       "password"
     );
     expect(existingUser).not.toBeNull();
-    const user = await addUser("Test2", "test@test.com", true, "password");
-    expect(user).toBeNull();
+
+    await expect(
+      addUser("Test2", "test@test.com", true, "password")
+    ).rejects.toThrow();
   });
 
   it("User should updated", async () => {

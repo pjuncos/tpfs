@@ -1,10 +1,10 @@
 import { Document, Schema, model } from "mongoose";
 
-export const ROLES = {
-  ADMIN: 0,
-  TEACHER: 1,
-  STUDENT: 2,
-};
+export enum ROLES {
+  ADMIN = 0,
+  TEACHER = 1,
+  STUDENT = 2,
+}
 
 export interface IUser extends Document {
   email: string;
@@ -16,10 +16,18 @@ export interface IUser extends Document {
 
 export const UserSchema = new Schema(
   {
-    email: { type: String, required: true },
-    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    name: {
+      type: String,
+      required: true,
+      minLength: [4, "Name should be minimum of 4 characters"],
+    },
     role: { type: Number, required: true, enum: ROLES, default: ROLES.STUDENT },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: true,
+      minLength: [8, "Password must be a minimum of 8 characters"],
+    },
     isActive: { type: Boolean, required: true },
   },
   { timestamps: true }

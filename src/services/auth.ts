@@ -16,6 +16,7 @@ export const encodePassword = async function (
 const createToken = async function (user: IUser): Promise<string | undefined> {
   try {
     const payload = {
+      _id: user._id,
       email: user.email,
       name: user.name,
       role: user.role,
