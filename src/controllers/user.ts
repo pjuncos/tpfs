@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { handleControllerError } from "../errors";
+import { AuthorizationError, handleControllerError } from "../errors";
 import { CustomRequest } from "../middlewares/request";
 import * as UserService from "../services/user";
 
@@ -14,11 +14,14 @@ const getAllUsers = async (req: CustomRequest, res: Response) => {
   }
 };
 
-const addUser = async (req: Request, res: Response) => {
+const addUser = async (req: CustomRequest, res: Response) => {
   const { name, email, password, role } = req.body;
   try {
+    if (req.user && !req.user.isAdmin()) {
+      throw new AuthorizationError();
+    }
     const result = await UserService.addUser(name, email, true, password, role);
-    return res.status(201).send(result);
+    res.status(201).send(result);
   } catch (error) {
     handleControllerError(error, res, "Error creating user");
   }
@@ -28,7 +31,7 @@ const editUser = async (req: Request, res: Response) => {
   const user = { _id: req.params.id, ...req.body };
   try {
     const result = await UserService.editUser(user);
-    return res.status(200).json(result);
+    res.status(200).json(result);
   } catch (error) {
     handleControllerError(error, res, "Internal error");
   }
@@ -38,7 +41,7 @@ const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const result = await UserService.getUser(id);
-    return res.status(200).json(result);
+    res.status(200).json(result);
   } catch (error) {
     handleControllerError(error, res, "Internal error");
   }

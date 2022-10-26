@@ -8,7 +8,7 @@ dotenv.config();
 
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "secret_key";
 
-const verifyAuth = (roles?: [ROLES]) => {
+const verifyAuth = (roles?: ROLES[]) => {
   return (req: CustomRequest, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
     if (!token) {

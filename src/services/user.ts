@@ -1,5 +1,5 @@
 import { NotFoundError, ValidationError } from "../errors";
-import User, { IUser, ROLES } from "../models/user";
+import User, { IUser } from "../models/user";
 import { encodePassword } from "./auth";
 
 const addUser = async (
@@ -13,9 +13,7 @@ const addUser = async (
   if (existUser) {
     return Promise.reject(new ValidationError("User already exists"));
   }
-  if (role) {
-    console.log(ROLES.STUDENT);
-  }
+
   const encoded = await encodePassword(password);
   const usr = new User({
     name: name,

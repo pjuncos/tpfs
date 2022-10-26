@@ -2,8 +2,7 @@ import { Document, Schema, model } from "mongoose";
 
 export enum ROLES {
   ADMIN = 0,
-  TEACHER = 1,
-  STUDENT = 2,
+  USER = 1,
 }
 
 export interface IUser extends Document {
@@ -12,6 +11,7 @@ export interface IUser extends Document {
   role: number;
   password: string;
   isActive: boolean;
+  isAdmin(): boolean;
 }
 
 export const UserSchema = new Schema(
@@ -22,7 +22,7 @@ export const UserSchema = new Schema(
       required: true,
       minLength: [4, "Name should be minimum of 4 characters"],
     },
-    role: { type: Number, required: true, enum: ROLES, default: ROLES.STUDENT },
+    role: { type: Number, required: true, enum: ROLES, default: ROLES.USER },
     password: {
       type: String,
       required: true,
@@ -38,6 +38,10 @@ export const UserSchema = new Schema(
     delete object.password;
   },
 });
+
+UserSchema.methods.isAdmin = function (this: IUser) {
+  return this.role === ROLES.ADMIN;
+};
 
 const User = model<IUser>("User", UserSchema);
 export default User;
